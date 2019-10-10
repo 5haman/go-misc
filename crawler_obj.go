@@ -58,7 +58,7 @@ func main() {
 	//games := []model.Game{}
 	//db.DB.Where(&model.Game{Vendor: "Netent"}).Find(&games)
 
-	for id := 1; id <= 3283; id++ {
+	for id := 535; id <= 3283; id++ {
 	//for _, game := range games {
 		game := model.Game{}
 		db.DB.First(&game, id)

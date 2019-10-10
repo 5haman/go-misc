@@ -15,7 +15,8 @@ import (
 	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/chromedp"
 	"github.com/chromedp/chromedp/device"
-	"github.com/chromedp/cdproto/network"
+	//"github.com/chromedp/cdproto/network"
+	//"github.com/chromedp/cdproto/page"
 	//"github.com/chromedp/cdproto/emulation"
 	"github.com/qor/media"
 
@@ -83,6 +84,7 @@ func main() {
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(),
 		[]chromedp.ExecAllocatorOption{
 			chromedp.UserDataDir("chrome-data"),
+			chromedp.ProxyServer("localhost:8081"),
 			chromedp.NoFirstRun,
 			chromedp.NoDefaultBrowserCheck,
 			chromedp.Flag("disable-background-timer-throttling", true),
@@ -114,7 +116,7 @@ func main() {
 
 	for p := 1; p <= 287; p++ {
 		if err := chromedp.Run(newCtx,
-			chromedp.Emulate(device.IPadPro),
+			chromedp.Emulate(device.IPadMinilandscape),
 			chromedp.Navigate(fmt.Sprintf(`https://www.askgamblers.com/free-online-slots/%d`, p)),
 			chromedp.Nodes("a", &links, chromedp.ByQueryAll),
 		); err != nil {
@@ -145,6 +147,7 @@ func (job *GameJob) Process(ctx *context.Context) {
 
 	if err := chromedp.Run(*ctx,
 		chromedp.Emulate(device.IPadMinilandscape),
+		/*
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			expr := cdp.TimeSinceEpoch(time.Now().Add(30 * time.Minute))
 			success, err := network.SetCookie("GameId", fmt.Sprintf("%d", gamelist.Get(game))).
@@ -161,12 +164,19 @@ func (job *GameJob) Process(ctx *context.Context) {
 
 			return nil
 		}),
+		*/
+		/*
+		ActionFunc(func(ctx context.Context) error {
+			_, _, _, err := page.Navigate(`https://www.askgamblers.com` + game).Do(ctx)
+			return err
+		}),
+		*/
 		chromedp.Navigate(`https://www.askgamblers.com` + game),
 		//chromedp.WaitVisible(`content-main`, chromedp.BySearch),
+		chromedp.WaitVisible("#play-game", chromedp.ById),
+		chromedp.Click("#play-game", chromedp.ById),
 		chromedp.Nodes("script", &scripts, chromedp.ByQueryAll),
 		chromedp.Text("top10-list top10-list-full-width", &slotDetails, chromedp.BySearch),
-		//chromedp.WaitVisible("#play-game", chromedp.ByID),
-		chromedp.Click("#play-game", chromedp.ByID),
 		//chromedp.WaitVisible("#age-over", chromedp.ByID),
 		//chromedp.Click("#age-over", chromedp.ByID),
 		chromedp.Sleep(30 * time.Second),

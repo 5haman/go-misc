@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	outdir = `../public/system/src/netent`
+	outdir = `../public/system_new/src/netent`
 )
 
 var (
@@ -54,11 +54,13 @@ func main() {
 
 	proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
 
-	/*
+
 	// responce handlers
+	/*
 	proxy.OnResponse().DoFunc(func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 		u := *ctx.Req.URL
 
+		/*
 		if u.Hostname() == "www.askgamblers.com" {
 			for k, v := range ctx.Req.Header {
 				for _, v2 := range v {
@@ -75,10 +77,11 @@ func main() {
 			//spew.Dump(ctx.Req.Header)
 		}
 
+
 			if !exclude.MatchString(u.Hostname()) {
 				//if u.Hostname() != "redirect" && u.Hostname() != "localhost" && !strings.Contains(u.Hostname(), "icloud") && !strings.Contains(u.Hostname(), "google") && !strings.Contains(u.Hostname(), "yandex") {
 				parts := strings.Split(u.RequestURI(), "/")
-				dir := fmt.Sprintf(`%s/%d/%s`, outdir, id.Get(), u.Hostname())
+				dir := fmt.Sprintf(`%s/%s`, outdir, u.Hostname())
 				file := ""
 				for k, v := range parts {
 					if v != "" && k < len(parts)-1 {
@@ -100,7 +103,7 @@ func main() {
 
 				f, err := os.Create(dir + `/` + file + `.header`)
 				if err != nil {
-					log.Println(err)
+					log.Error.Println(err)
 				}
 
 				//log.Printf("Saving %s/%s.header", dir, file)

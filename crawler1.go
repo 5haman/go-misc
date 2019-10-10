@@ -106,7 +106,7 @@ func main() {
 		log.Error.Println(err)
 	}
 
-	queue := NewJobQueue(2, &newCtx)
+	queue := NewJobQueue(4, &newCtx)
 	queue.Start()
 	defer queue.Stop()
 
@@ -162,13 +162,14 @@ func (job *GameJob) Process(ctx *context.Context) {
 			return nil
 		}),
 		chromedp.Navigate(`https://www.askgamblers.com` + game),
+		//chromedp.WaitVisible(`content-main`, chromedp.BySearch),
+		chromedp.Nodes("script", &scripts, chromedp.ByQueryAll),
+		chromedp.Text("top10-list top10-list-full-width", &slotDetails, chromedp.BySearch),
 		//chromedp.WaitVisible("#play-game", chromedp.ByID),
 		chromedp.Click("#play-game", chromedp.ByID),
 		//chromedp.WaitVisible("#age-over", chromedp.ByID),
-		chromedp.Click("#age-over", chromedp.ByID),
+		//chromedp.Click("#age-over", chromedp.ByID),
 		chromedp.Sleep(30 * time.Second),
-		chromedp.Nodes("script", &scripts, chromedp.ByQueryAll),
-		chromedp.Text("top10-list top10-list-full-width", &slotDetails, chromedp.BySearch),
 	); err != nil {
 		log.Error.Println(err)
 	}
